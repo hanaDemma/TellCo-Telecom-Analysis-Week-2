@@ -62,3 +62,28 @@ def segment_users_and_calculate_total_data(data):
   total_data_per_decile = data.groupby('decile_class')['Total_DL_+_UL'].sum()
 
   return total_data_per_decile
+
+
+def compute_dispersion_parameters(data):
+  """
+  Computes various dispersion parameters for a DataFrame.
+
+  Args:
+    data : The input DataFrame.
+
+  Returns:
+    A DataFrame containing dispersion parameters for each numeric column.
+  """
+
+  numeric_columns = data.select_dtypes(include='number').columns
+
+  dispersion_params = pd.DataFrame(index=['Range', 'Variance', 'Std Dev', 'IQR', 'Coef Var'], columns=numeric_columns)
+
+  for column in numeric_columns:
+    dispersion_params.loc['Range', column] = data[column].max() - data[column].min()
+    dispersion_params.loc['Variance', column] = data[column].var()
+    dispersion_params.loc['Std Dev', column] = data[column].std()
+    dispersion_params.loc['IQR', column] = data[column].quantile(0.75) - data[column].quantile(0.25)
+    dispersion_params.loc['Coef Var', column] = data[column].std() / data[column].mean()
+
+  return dispersion_params
