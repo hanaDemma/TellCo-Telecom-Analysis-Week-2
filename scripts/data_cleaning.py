@@ -88,7 +88,8 @@ def get_outlier_summary(data):
 def getBoxPlotToCheckOutlier(data, variables):
     for variable in variables:
         if pd.api.types.is_numeric_dtype(data[variable]):
-            sns.boxplot(data=data, x=variable, orient='v')
+            plt.figure(figsize=(8, 5))
+            sns.boxplot(data=data, y=variable)
             plt.title(f'Box Plot of {variable}')
             plt.xlabel('Values')
             plt.show()

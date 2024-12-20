@@ -1,6 +1,9 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
 
@@ -110,3 +113,41 @@ def correlationBetweenApplication(data):
         agg_xdr_data['Gaming Data']=agg_xdr_data['Gaming DL (Bytes)']+agg_xdr_data['Gaming UL (Bytes)']
         agg_xdr_data['Other Data'] = agg_xdr_data['Other DL (Bytes)']+agg_xdr_data['Other UL (Bytes)']
         return agg_xdr_data;
+
+
+def analyze_user_engagement(data):
+    """
+    Analyzes user engagement based on session metrics and segments users into clusters.
+
+    Args:
+      data: The input DataFrame containing user data.
+
+    Returns:
+      A DataFrame with segmented users and engagement metrics.
+    """
+
+    # Aggregate metrics per customer ID
+    aggregated_data = data.groupby('MSISDN/Number').agg({'Bearer Id': 'sum',
+                                                        'Dur. (ms)': 'sum',
+                                                        'Total_DL_+_UL': 'sum'})
+
+  
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(aggregated_data)
+
+    normalized_data = pd.DataFrame(normalized_data)
+
+    # K-means clustering
+    kmeans = KMeans(n_clusters=3, random_state=42)
+    clusters = kmeans.fit_predict(normalized_data)
+    aggregated_data['clusters'] = clusters
+
+    # Compute minimum, maximum, average, and total metrics per cluster
+    cluster_stats = aggregated_data.groupby('clusters').agg(['min', 'max', 'mean', 'sum'])
+
+    # Aggregate user total traffic per application
+    traffic_per_app = data.groupby(['MSISDN/Number','Google DL (Bytes)','Google UL (Bytes)','Email DL (Bytes)','Email UL (Bytes)','Youtube UL (Bytes)','Youtube DL (Bytes)', 'Netflix DL (Bytes)','Netflix UL (Bytes)','Gaming DL (Bytes)','Gaming UL (Bytes)','Other UL (Bytes)'])['Total_DL_+_UL'].sum().reset_index()
+    top_10_most_engaged_users = traffic_per_app.groupby(['MSISDN/Number','Google DL (Bytes)','Google UL (Bytes)','Email DL (Bytes)','Email UL (Bytes)','Youtube UL (Bytes)','Youtube DL (Bytes)', 'Netflix DL (Bytes)','Netflix UL (Bytes)','Gaming DL (Bytes)','Gaming UL (Bytes)','Other UL (Bytes)'])['Total_DL_+_UL'].sum().nlargest(10)
+
+    return aggregated_data, cluster_stats, top_10_most_engaged_users,normalized_data,clusters
+
