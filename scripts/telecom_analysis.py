@@ -1,4 +1,6 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
 
@@ -38,3 +40,73 @@ def aggregate_xdr_data(data):
     )
 
     return aggregated_df
+
+
+def segment_users_and_calculate_total_data(data):
+  """
+  Segments users into the top five decile classes based on total session duration and calculates the total data (DL+UL) per decile class.
+
+  Args:
+    data: The input DataFrame containing user information data.
+
+  Returns:
+    A DataFrame with decile class and total data per decile class.
+  """
+
+  # Calculate total DL and UL data per user
+  data['Total_DL_+_UL'] = data['Total DL (Bytes)'] + data['Total UL (Bytes)']
+
+  # Segment users into top five decile classes based on total session duration
+  decile_labels = ['Decile 1', 'Decile 2', 'Decile 3', 'Decile 4', 'Decile 5']
+  data['decile_class'] = pd.qcut(data['Dur. (ms)'], 5, labels=decile_labels)
+
+  # Calculate total data per decile class
+  total_data_per_decile = data.groupby('decile_class')['Total_DL_+_UL'].sum()
+
+  return total_data_per_decile
+
+
+def compute_dispersion_parameters(data):
+  """
+  Computes various dispersion parameters for a DataFrame.
+
+  Args:
+    data : The input DataFrame.
+
+  Returns:
+    A DataFrame containing dispersion parameters for each numeric column.
+  """
+
+  numeric_columns = data.select_dtypes(include='number').columns
+
+  dispersion_params = pd.DataFrame(index=['Range', 'Variance', 'Std Dev', 'IQR', 'Coef Var'], columns=numeric_columns)
+
+  for column in numeric_columns:
+    dispersion_params.loc['Range', column] = data[column].max() - data[column].min()
+    dispersion_params.loc['Variance', column] = data[column].var()
+    dispersion_params.loc['Std Dev', column] = data[column].std()
+    dispersion_params.loc['IQR', column] = data[column].quantile(0.75) - data[column].quantile(0.25)
+    dispersion_params.loc['Coef Var', column] = data[column].std() / data[column].mean()
+
+  return dispersion_params
+
+def plot_dispersion_parameters(dispersion_results,applications):
+    for application in applications:
+      sns.barplot(data=dispersion_results[application])
+      plt.title('Dispersion Parameters')
+      plt.xlabel(application)
+      plt.ylabel('Value')
+      plt.xticks(rotation=45)
+      plt.show()
+
+
+def correlationBetweenApplication(data):
+        agg_xdr_data = pd.DataFrame(data)
+        agg_xdr_data['Social Media Data'] = agg_xdr_data['Social Media DL (Bytes)']+agg_xdr_data['Social Media UL (Bytes)']
+        agg_xdr_data['Google Data'] = agg_xdr_data['Google DL (Bytes)']+agg_xdr_data['Gaming UL (Bytes)']
+        agg_xdr_data['Email Data']=agg_xdr_data['Email DL (Bytes)']+agg_xdr_data['Email UL (Bytes)']
+        agg_xdr_data['YouTube Data']=agg_xdr_data['Email DL (Bytes)']+agg_xdr_data['Email UL (Bytes)']
+        agg_xdr_data['Netflix Data']=agg_xdr_data['Netflix DL (Bytes)']+agg_xdr_data['Netflix UL (Bytes)']
+        agg_xdr_data['Gaming Data']=agg_xdr_data['Gaming DL (Bytes)']+agg_xdr_data['Gaming UL (Bytes)']
+        agg_xdr_data['Other Data'] = agg_xdr_data['Other DL (Bytes)']+agg_xdr_data['Other UL (Bytes)']
+        return agg_xdr_data;
