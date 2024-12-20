@@ -38,3 +38,27 @@ def aggregate_xdr_data(data):
     )
 
     return aggregated_df
+
+
+def segment_users_and_calculate_total_data(data):
+  """
+  Segments users into the top five decile classes based on total session duration and calculates the total data (DL+UL) per decile class.
+
+  Args:
+    data: The input DataFrame containing user information data.
+
+  Returns:
+    A DataFrame with decile class and total data per decile class.
+  """
+
+  # Calculate total DL and UL data per user
+  data['Total_DL_+_UL'] = data['Total DL (Bytes)'] + data['Total UL (Bytes)']
+
+  # Segment users into top five decile classes based on total session duration
+  decile_labels = ['Decile 1', 'Decile 2', 'Decile 3', 'Decile 4', 'Decile 5']
+  data['decile_class'] = pd.qcut(data['Dur. (ms)'], 5, labels=decile_labels)
+
+  # Calculate total data per decile class
+  total_data_per_decile = data.groupby('decile_class')['Total_DL_+_UL'].sum()
+
+  return total_data_per_decile
