@@ -1,4 +1,6 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
 
@@ -87,3 +89,12 @@ def compute_dispersion_parameters(data):
     dispersion_params.loc['Coef Var', column] = data[column].std() / data[column].mean()
 
   return dispersion_params
+
+def plot_dispersion_parameters(dispersion_results,applications):
+    for application in applications:
+      sns.barplot(data=dispersion_results[application])
+      plt.title('Dispersion Parameters')
+      plt.xlabel(application)
+      plt.ylabel('Value')
+      plt.xticks(rotation=45)
+      plt.show()
