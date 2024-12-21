@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
@@ -277,3 +280,36 @@ def find_top_satisfied_customers(data, n=10):
 
     top_satisfied = data.nlargest(n, 'satisfaction_score')['MSISDN/Number']
     return top_satisfied
+
+
+
+def build_regression_model(data):
+  """
+  Builds a regression model to predict satisfaction score.
+
+  Args:
+    data : The input DataFrame containing user data.
+
+  Returns:
+  A tuple containing the trained model, R-squared score, and mean squared error.
+  """
+
+  # Split data into features and target variable
+  X = data[['engagement_score', 'experience_score']]
+  y = data['satisfaction_score']
+
+  # Split data into training and testing sets
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+  # Create and train a linear regression model
+  model = LinearRegression()
+  model.fit(X_train, y_train)
+
+  # Make predictions on the test set
+  y_pred = model.predict(X_test)
+
+  # Evaluate the model
+  mse = mean_squared_error(y_test, y_pred)
+  r2 = r2_score(y_test, y_pred)
+
+  return model, r2, mse
