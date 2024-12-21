@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics.pairwise import euclidean_distances
 
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
@@ -223,3 +224,27 @@ def analyze_handset_retrasmission_metrics(data,tcp_retransmission):
 
   print("\nAverage TCP Retransmission Count per Handset Type:\n")
   print(avg_retransmission_by_handset.to_markdown())
+
+  
+def assign_engagement_experience_scores(data, engagement_clusters,experience_clusters):
+  """
+  Assigns engagement and experience scores to users based on Euclidean distance.
+
+  Args:
+    data: The input DataFrame containing user data.
+    engagement_clusters: The DataFrame with engagement clusters.
+    experience_clusters: The DataFrame with experience clusters.
+
+  Returns:
+    A DataFrame with assigned engagement and experience scores.
+  """
+  engagement_clusters = engagement_clusters.drop('clusters', axis=1)
+  experience_clusters = experience_clusters.drop(['clusters','Handset Type'], axis=1)
+
+  engagement_distances = euclidean_distances(data[['Bearer Id','Dur. (ms)','Total_DL_+_UL']], engagement_clusters.iloc[0].values.reshape(1, -1))
+  experience_distances = euclidean_distances(data[['TCP DL Retrans. Vol (Bytes)', 'TCP UL Retrans. Vol (Bytes)', 'Avg RTT DL (ms)','Avg RTT UL (ms)', 'Avg Bearer TP DL (kbps)','Avg Bearer TP UL (kbps)']], experience_clusters.iloc[2].values.reshape(1, -1))
+
+  data['engagement_score'] = engagement_distances.min(axis=1)
+  data['experience_score'] = experience_distances.min(axis=1)
+
+  return data
