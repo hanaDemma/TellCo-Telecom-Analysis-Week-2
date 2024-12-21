@@ -175,3 +175,23 @@ def aggregate_average_xdr_data(data):
     aggregated_average_df['clusters'] = clusters
 
     return aggregated_average_df,clusters
+
+
+def find_top_bottom_frequent(data, column_name, n=10):
+    """
+    Finds the top n, bottom n, and most frequent values for a given column.
+
+    Args:
+        data: The input DataFrame.
+        column_name: The name of the column to analyze.
+        n: The number of values to find.
+
+    Returns:
+        A tuple containing the top n, bottom n, and most frequent values.
+    """
+
+    top_n = data[column_name].nlargest(n)
+    bottom_n = data[column_name].nsmallest(n)
+    most_frequent = data[column_name].value_counts().head(n)
+
+    return top_n, bottom_n, most_frequent
