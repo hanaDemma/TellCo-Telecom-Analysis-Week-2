@@ -342,3 +342,19 @@ def segment_users_k_means(data):
   data['engagement_experience_segment'] = clusters
 
   return data
+
+
+
+def aggregate_cluster_scores(data):
+  """
+  Aggregates the average satisfaction and experience scores per cluster.
+
+  Args:
+    data: The input DataFrame containing user data.
+
+  Returns:
+   A DataFrame with aggregated cluster scores.
+  """
+
+  cluster_stats = data.groupby('engagement_experience_segment')[['satisfaction_score', 'experience_score']].mean()
+  return cluster_stats
