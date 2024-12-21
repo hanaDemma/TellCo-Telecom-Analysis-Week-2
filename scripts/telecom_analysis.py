@@ -151,3 +151,27 @@ def analyze_user_engagement(data):
 
     return aggregated_data, cluster_stats, top_10_most_engaged_users,normalized_data,clusters
 
+
+def aggregate_average_xdr_data(data):
+    # Aggregate data
+    aggregated_average_df = data.groupby('MSISDN/Number').agg({
+                                                            'TCP DL Retrans. Vol (Bytes)':'mean',
+                                                            'TCP UL Retrans. Vol (Bytes)':'mean',
+                                                            'Avg RTT DL (ms)':'mean',
+                                                            'Avg RTT UL (ms)':'mean',
+                                                            'Avg Bearer TP DL (kbps)':'mean',
+                                                            'Avg Bearer TP UL (kbps)':'mean',
+                                                            'Handset Type':'first'
+                                                        })
+    select_columns=aggregated_average_df[ ['TCP DL Retrans. Vol (Bytes)', 'TCP UL Retrans. Vol (Bytes)', 'Avg RTT DL (ms)','Avg RTT UL (ms)', 'Avg Bearer TP DL (kbps)','Avg Bearer TP UL (kbps)']]
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(select_columns)
+
+    normalized_data = pd.DataFrame(normalized_data)
+
+    # K-means clustering
+    kmeans = KMeans(n_clusters=3, random_state=42)
+    clusters = kmeans.fit_predict(normalized_data)
+    aggregated_average_df['clusters'] = clusters
+
+    return aggregated_average_df,clusters
