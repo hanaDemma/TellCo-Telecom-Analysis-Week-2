@@ -7,6 +7,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
@@ -313,3 +314,31 @@ def build_regression_model(data):
   r2 = r2_score(y_test, y_pred)
 
   return model, r2, mse
+
+
+def segment_users_k_means(data):
+  """
+  Segments users into two clusters based on engagement and experience scores.
+
+  Args:
+    data: The input DataFrame containing user data.
+
+  Returns:
+    A DataFrame with segmented users.
+  """
+
+  # Select relevant columns
+  engagement_experience_metrics = data[['engagement_score', 'experience_score']]
+
+  # Standardize the data
+  scaler = StandardScaler()
+  scaled_data = scaler.fit_transform(engagement_experience_metrics)
+
+  # Perform k-means clustering
+  kmeans = KMeans(n_clusters=2, random_state=42)
+  clusters = kmeans.fit_predict(scaled_data)
+
+  # Add cluster labels to the original DataFrame
+  data['engagement_experience_segment'] = clusters
+
+  return data
