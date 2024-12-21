@@ -248,3 +248,32 @@ def assign_engagement_experience_scores(data, engagement_clusters,experience_clu
   data['experience_score'] = experience_distances.min(axis=1)
 
   return data
+
+def calculate_satisfaction_score(data):
+    """
+    Calculates a satisfaction score based on engagement and experience scores.
+
+    Args:
+        data: The input DataFrame containing user data.
+
+    Returns:
+        A Series with satisfaction scores for each user.
+    """
+
+    data['satisfaction_score'] = (data['engagement_score'] + data['experience_score']) / 2
+    return data
+
+def find_top_satisfied_customers(data, n=10):
+    """
+    Finds the top n satisfied customers based on their satisfaction score.
+
+    Args:
+        data : The input DataFrame containing user data.
+        n: The number of top customers to find.
+
+    Returns:
+         A Series with the top n customer IDs.
+    """
+
+    top_satisfied = data.nlargest(n, 'satisfaction_score')['MSISDN/Number']
+    return top_satisfied
