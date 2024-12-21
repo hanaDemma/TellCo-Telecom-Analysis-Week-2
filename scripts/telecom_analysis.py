@@ -195,3 +195,31 @@ def find_top_bottom_frequent(data, column_name, n=10):
     most_frequent = data[column_name].value_counts().head(n)
 
     return top_n, bottom_n, most_frequent
+
+
+def analyze_handset_throughput(data, throughput_column):
+    """
+    Analyzes the distribution of average throughput per handset type.
+
+    Args:
+        data (DataFrame): The input DataFrame containing handset data.
+        throughput_column (str): The column name representing throughput.
+    """
+    avg_throughput_by_handset = data.groupby('Handset Type')[throughput_column].mean()
+
+    print("\nAverage Throughput per Handset Type (in Mbps):\n")
+    print(avg_throughput_by_handset.to_markdown())
+
+def analyze_handset_retrasmission_metrics(data,tcp_retransmission):
+  """
+  Analyzes the distribution of average TCP retransmission view per handset type.
+
+  Args:
+    data The input DataFrame containing handset data.
+  """
+
+  avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retransmission].mean()
+
+
+  print("\nAverage TCP Retransmission Count per Handset Type:\n")
+  print(avg_retransmission_by_handset.to_markdown())
