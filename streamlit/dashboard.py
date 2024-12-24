@@ -558,77 +558,79 @@ elif options == "User Engagement Analysis":
 
 
 
-# elif options == "User Experience Analysis":
-#     st.title("User Experience Analysis")
-#     # Add your analysis code here for User Experience
-#     st.title('Experience Analytics')
-#     st.success('Aggregate average TCP,RTT,TP and Handset type per user')
-#     aggregated_average_experience_analysis,experience_clusters = aggregate_average_xdr_data(xdr_data)
-
-#     st.dataframe(aggregated_average_experience_analysis)
-
-
-#     # Handset Type Distribution
-#     st.success("Handset Type Distribution")
-#     handset_counts = aggregated_average_experience_analysis['Handset Type'].value_counts()
-#     st.bar_chart(handset_counts)
-
-#     st.success('Top, Bottom, and Most frequent values for TCP, RTT, and throughput')
+elif options == "User Experience Analysis":
+    st.title("User Experience Analysis")
+    # Add your analysis code here for User Experience
+    st.title('Experience Analytics')
+    st.success('Aggregate average TCP,RTT,TP and Handset type per user')
+    aggregated_average_experience_analysis,experience_clusters = aggregate_average_xdr_data(xdr_data)
+    aggregated_average_experience_analysis.fillna(aggregated_average_experience_analysis.mean(), inplace=True)
 
 
-#     # Find top, bottom, and most frequent values for TCP, RTT, and throughput
-#     top_tcp_DL, bottom_tcp_DL, frequent_tcp_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP DL Retrans. Vol (Bytes)')
-#     top_tcp_UL, bottom_tcp_UL, frequent_tcp_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP UL Retrans. Vol (Bytes)')
-#     top_rtt_DL, bottom_rtt_DL, frequent_rtt_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT DL (ms)')
-#     top_rtt_UL, bottom_rtt_UL, frequent_rtt_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT UL (ms)')
-#     top_throughput_DL, bottom_throughput_DL, frequent_throughput_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP DL (kbps)')
-#     top_throughput_UL, bottom_throughput_UL, frequent_throughput_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP UL (kbps)')
-#     st.success('Top TCP')
-#     st.write(top_tcp_DL,top_tcp_UL)
-#     st.success('Bottom TCP')
-#     st.write(bottom_tcp_DL,bottom_tcp_UL)
-#     st.success('Frequent TCP')
-#     st.write(frequent_tcp_DL,frequent_tcp_UL)
-#     st.success('Top RTT')
-#     st.write(top_rtt_DL,top_rtt_UL)
-#     st.success('Bottom RTT')
-#     st.write(bottom_rtt_DL,bottom_rtt_UL)
-#     st.success('Frequent RTT')
-#     st.write(frequent_rtt_DL,frequent_rtt_UL)
-#     st.success('Top Throughput')
-#     st.write(top_throughput_DL,top_throughput_UL)
-#     st.success('Bottom Throughput')
-#     st.write(bottom_throughput_DL,bottom_throughput_UL)
-#     st.success('Frequent Throughput')
-#     st.write(frequent_throughput_DL,frequent_throughput_UL)
+    st.dataframe(aggregated_average_experience_analysis)
 
-#     st.subheader('The distribution of average Throughput per Handset type')
-# def analyze_handset_throughput_metrics(data,avg_throughput):
-#     avg_retransmission_by_handset = data.groupby('Handset Type')[avg_throughput].mean()
-#     st.success("Average Throughput per Handset Type")
-#     st.write(avg_retransmission_by_handset)
-#     analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP DL (kbps)')
-#     analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP UL (kbps)')
 
-#     st.subheader('Average TCP retransmission view per handset type')
-#     def analyze_handset_retrasmission_metrics(data,tcp_retrans):
-#         avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retrans].mean()
-#     st.success("Average TCP Retransmission per Handset Type")
-#     st.write(avg_retransmission_by_handset)
+    # Handset Type Distribution
+    st.success("Handset Type Distribution")
+    handset_counts = aggregated_average_experience_analysis['Handset Type'].value_counts()
+    st.bar_chart(handset_counts)
 
-#     analyze_handset_retrasmission_metrics(xdr_data,'TCP DL Retrans. Vol (Bytes)')
-#     analyze_handset_retrasmission_metrics(xdr_data,'TCP UL Retrans. Vol (Bytes)')
+    st.success('Top, Bottom, and Most frequent values for TCP, RTT, and throughput')
 
-#     st.subheader('Aggregated experience Cluster analysis')
-#     cluster_1 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 0]
-#     cluster_2 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 1]
-#     cluster_3 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 2]
-#     st.success("First cluster of Aggregated experience")
-#     st.write(cluster_1)
-#     st.success("Second cluster of Aggregated experience")
-#     st.write(cluster_2)
-#     st.success("Third cluster of Aggregated experience")
-#     st.write(cluster_3)
+
+    # Find top, bottom, and most frequent values for TCP, RTT, and throughput
+    top_tcp_DL, bottom_tcp_DL, frequent_tcp_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP DL Retrans. Vol (Bytes)')
+    top_tcp_UL, bottom_tcp_UL, frequent_tcp_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP UL Retrans. Vol (Bytes)')
+    top_rtt_DL, bottom_rtt_DL, frequent_rtt_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT DL (ms)')
+    top_rtt_UL, bottom_rtt_UL, frequent_rtt_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT UL (ms)')
+    top_throughput_DL, bottom_throughput_DL, frequent_throughput_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP DL (kbps)')
+    top_throughput_UL, bottom_throughput_UL, frequent_throughput_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP UL (kbps)')
+    st.success('Top TCP')
+    st.write(top_tcp_DL,top_tcp_UL)
+    st.success('Bottom TCP')
+    st.write(bottom_tcp_DL,bottom_tcp_UL)
+    st.success('Frequent TCP')
+    st.write(frequent_tcp_DL,frequent_tcp_UL)
+    st.success('Top RTT')
+    st.write(top_rtt_DL,top_rtt_UL)
+    st.success('Bottom RTT')
+    st.write(bottom_rtt_DL,bottom_rtt_UL)
+    st.success('Frequent RTT')
+    st.write(frequent_rtt_DL,frequent_rtt_UL)
+    st.success('Top Throughput')
+    st.write(top_throughput_DL,top_throughput_UL)
+    st.success('Bottom Throughput')
+    st.write(bottom_throughput_DL,bottom_throughput_UL)
+    st.success('Frequent Throughput')
+    st.write(frequent_throughput_DL,frequent_throughput_UL)
+
+    st.subheader('The distribution of average Throughput per Handset type')
+def analyze_handset_throughput_metrics(data,avg_throughput):
+    avg_retransmission_by_handset = data.groupby('Handset Type')[avg_throughput].mean()
+    st.success("Average Throughput per Handset Type")
+    st.write(avg_retransmission_by_handset)
+    analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP DL (kbps)')
+    analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP UL (kbps)')
+
+    st.subheader('Average TCP retransmission view per handset type')
+    def analyze_handset_retrasmission_metrics(data,tcp_retrans):
+        avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retrans].mean()
+    st.success("Average TCP Retransmission per Handset Type")
+    st.write(avg_retransmission_by_handset)
+
+    analyze_handset_retrasmission_metrics(xdr_data,'TCP DL Retrans. Vol (Bytes)')
+    analyze_handset_retrasmission_metrics(xdr_data,'TCP UL Retrans. Vol (Bytes)')
+
+    st.subheader('Aggregated experience Cluster analysis')
+    cluster_1 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 0]
+    cluster_2 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 1]
+    cluster_3 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 2]
+    st.success("First cluster of Aggregated experience")
+    st.write(cluster_1)
+    st.success("Second cluster of Aggregated experience")
+    st.write(cluster_2)
+    st.success("Third cluster of Aggregated experience")
+    st.write(cluster_3)
 
 #     st.title("Satisfaction Analysis")
 #     st.success("Assign engagement and experience scores to users to calculate user satisfaction")
