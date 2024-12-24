@@ -25,16 +25,6 @@ The objective of this phase is to provide a comprehensive analysis of user behav
 - Bivariate Analysis: Explore relationships between two variables.
 - Correlation Analysis: Identify correlations between different features.
 - Dimensionality Reduction: Apply techniques like PCA if needed for analysis.
-# 4.  Experience Analytics
-- Aggregate, per customer:
-   - Average TCP retransmission
-   - Average RTT
-   - Handset type
-   - Average throughput
-- Compute & list 10 of the top, bottom, and most frequent:
-    - TCP values in the dataset. 
-    - RTT values in the dataset.
-    - Throughput values in the dataset.
 
 # How to Use
 - Clone the Repository:
@@ -92,3 +82,38 @@ This task focuses on analyzing user engagement metrics, including session freque
 - Session Duration: Analyze the duration of each user’s session.
 - Traffic Metrics: Total download and upload data used by each user.
 - K-Means Clustering: Use k-means clustering to segment users based on engagement patterns.
+
+## Task-3 Experience Analytics
+The objective of this phase is to conduct deep user exprience anlysis by focusing network parameters (TCP retransmission, Round Trip Time (RTT), Throughpu)
+
+- Aggregate, per customer:
+   - Average TCP retransmission
+   - Average RTT
+   - Handset type
+   - Average throughput
+- Compute & list 10 of the top, bottom, and most frequent:
+    - TCP values in the dataset. 
+    - RTT values in the dataset.
+    - Throughput values in the dataset.
+
+# Development Instructions
+- Create a task-3 Branch for development.
+- Commit progress regularly with clear and detailed commit messages.
+- Merge updates into the main branch via a Pull Request (PR).
+
+## Task-4 Satisfaction Analysis
+ 
+The objective of this phase to analyze user satifaction in depth Based on the engagement analysis + the experience analysis
+
+# Development Instructions
+- Create a task-4 Branch for development.
+- Commit progress regularly with clear and detailed commit messages.
+- Merge updates into the main branch via a Pull Request (PR).
+
+## 5. Dashboard Development 
+The objective of this phase to develop and visualize dashboard using streamlit
+
+# Development Instructions
+- Create a task-5 Branch for development.
+- Commit progress regularly with clear and detailed commit messages.
+- Merge updates into the main branch via a Pull Request (PR).
