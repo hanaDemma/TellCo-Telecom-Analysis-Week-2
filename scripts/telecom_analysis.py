@@ -3,6 +3,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 def aggregate_xdr_data(data):
     """Aggregates xDR data per user and application.
@@ -150,4 +155,207 @@ def analyze_user_engagement(data):
     top_10_most_engaged_users = traffic_per_app.groupby(['MSISDN/Number','Google DL (Bytes)','Google UL (Bytes)','Email DL (Bytes)','Email UL (Bytes)','Youtube UL (Bytes)','Youtube DL (Bytes)', 'Netflix DL (Bytes)','Netflix UL (Bytes)','Gaming DL (Bytes)','Gaming UL (Bytes)','Other UL (Bytes)'])['Total_DL_+_UL'].sum().nlargest(10)
 
     return aggregated_data, cluster_stats, top_10_most_engaged_users,normalized_data,clusters
+
+
+def aggregate_average_xdr_data(data):
+    # Aggregate data
+    aggregated_average_df = data.groupby('MSISDN/Number').agg({
+                                                            'TCP DL Retrans. Vol (Bytes)':'mean',
+                                                            'TCP UL Retrans. Vol (Bytes)':'mean',
+                                                            'Avg RTT DL (ms)':'mean',
+                                                            'Avg RTT UL (ms)':'mean',
+                                                            'Avg Bearer TP DL (kbps)':'mean',
+                                                            'Avg Bearer TP UL (kbps)':'mean',
+                                                            'Handset Type':'first'
+                                                        })
+    select_columns=aggregated_average_df[ ['TCP DL Retrans. Vol (Bytes)', 'TCP UL Retrans. Vol (Bytes)', 'Avg RTT DL (ms)','Avg RTT UL (ms)', 'Avg Bearer TP DL (kbps)','Avg Bearer TP UL (kbps)']]
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(select_columns)
+
+    normalized_data = pd.DataFrame(normalized_data)
+
+    # K-means clustering
+    kmeans = KMeans(n_clusters=3, random_state=42)
+    clusters = kmeans.fit_predict(normalized_data)
+    aggregated_average_df['clusters'] = clusters
+
+    return aggregated_average_df,clusters
+
+
+def find_top_bottom_frequent(data, column_name, n=10):
+    """
+    Finds the top n, bottom n, and most frequent values for a given column.
+
+    Args:
+        data: The input DataFrame.
+        column_name: The name of the column to analyze.
+        n: The number of values to find.
+
+    Returns:
+        A tuple containing the top n, bottom n, and most frequent values.
+    """
+
+    top_n = data[column_name].nlargest(n)
+    bottom_n = data[column_name].nsmallest(n)
+    most_frequent = data[column_name].value_counts().head(n)
+
+    return top_n, bottom_n, most_frequent
+
+
+def analyze_handset_throughput(data, throughput_column):
+    """
+    Analyzes the distribution of average throughput per handset type.
+
+    Args:
+        data (DataFrame): The input DataFrame containing handset data.
+        throughput_column (str): The column name representing throughput.
+    """
+    avg_throughput_by_handset = data.groupby('Handset Type')[throughput_column].mean()
+
+    print("\nAverage Throughput per Handset Type (in Mbps):\n")
+    print(avg_throughput_by_handset.to_markdown())
+
+def analyze_handset_retrasmission_metrics(data,tcp_retransmission):
+  """
+  Analyzes the distribution of average TCP retransmission view per handset type.
+
+  Args:
+    data The input DataFrame containing handset data.
+  """
+
+  avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retransmission].mean()
+
+
+  print("\nAverage TCP Retransmission Count per Handset Type:\n")
+  print(avg_retransmission_by_handset.to_markdown())
+
+  
+def assign_engagement_experience_scores(data, engagement_clusters,experience_clusters):
+  """
+  Assigns engagement and experience scores to users based on Euclidean distance.
+
+  Args:
+    data: The input DataFrame containing user data.
+    engagement_clusters: The DataFrame with engagement clusters.
+    experience_clusters: The DataFrame with experience clusters.
+
+  Returns:
+    A DataFrame with assigned engagement and experience scores.
+  """
+  engagement_clusters = engagement_clusters.drop('clusters', axis=1)
+  experience_clusters = experience_clusters.drop(['clusters','Handset Type'], axis=1)
+
+  engagement_distances = euclidean_distances(data[['Bearer Id','Dur. (ms)','Total_DL_+_UL']], engagement_clusters.iloc[0].values.reshape(1, -1))
+  experience_distances = euclidean_distances(data[['TCP DL Retrans. Vol (Bytes)', 'TCP UL Retrans. Vol (Bytes)', 'Avg RTT DL (ms)','Avg RTT UL (ms)', 'Avg Bearer TP DL (kbps)','Avg Bearer TP UL (kbps)']], experience_clusters.iloc[2].values.reshape(1, -1))
+
+  data['engagement_score'] = engagement_distances.min(axis=1)
+  data['experience_score'] = experience_distances.min(axis=1)
+
+  return data
+
+def calculate_satisfaction_score(data):
+    """
+    Calculates a satisfaction score based on engagement and experience scores.
+
+    Args:
+        data: The input DataFrame containing user data.
+
+    Returns:
+        A Series with satisfaction scores for each user.
+    """
+
+    data['satisfaction_score'] = (data['engagement_score'] + data['experience_score']) / 2
+    return data
+
+def find_top_satisfied_customers(data, n=10):
+    """
+    Finds the top n satisfied customers based on their satisfaction score.
+
+    Args:
+        data : The input DataFrame containing user data.
+        n: The number of top customers to find.
+
+    Returns:
+         A Series with the top n customer IDs.
+    """
+
+    top_satisfied = data.nlargest(n, 'satisfaction_score')['MSISDN/Number']
+    return top_satisfied
+
+
+
+def build_regression_model(data):
+  """
+  Builds a regression model to predict satisfaction score.
+
+  Args:
+    data : The input DataFrame containing user data.
+
+  Returns:
+  A tuple containing the trained model, R-squared score, and mean squared error.
+  """
+
+  # Split data into features and target variable
+  X = data[['engagement_score', 'experience_score']]
+  y = data['satisfaction_score']
+
+  # Split data into training and testing sets
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+  # Create and train a linear regression model
+  model = LinearRegression()
+  model.fit(X_train, y_train)
+
+  # Make predictions on the test set
+  y_pred = model.predict(X_test)
+
+  # Evaluate the model
+  mse = mean_squared_error(y_test, y_pred)
+  r2 = r2_score(y_test, y_pred)
+
+  return model, r2, mse
+
+
+def segment_users_k_means(data):
+  """
+  Segments users into two clusters based on engagement and experience scores.
+
+  Args:
+    data: The input DataFrame containing user data.
+
+  Returns:
+    A DataFrame with segmented users.
+  """
+
+  # Select relevant columns
+  engagement_experience_metrics = data[['engagement_score', 'experience_score']]
+
+  # Standardize the data
+  scaler = StandardScaler()
+  scaled_data = scaler.fit_transform(engagement_experience_metrics)
+
+  # Perform k-means clustering
+  kmeans = KMeans(n_clusters=2, random_state=42)
+  clusters = kmeans.fit_predict(scaled_data)
+
+  # Add cluster labels to the original DataFrame
+  data['engagement_experience_segment'] = clusters
+
+  return data
+
+
+
+def aggregate_cluster_scores(data):
+  """
+  Aggregates the average satisfaction and experience scores per cluster.
+
+  Args:
+    data: The input DataFrame containing user data.
+
+  Returns:
+   A DataFrame with aggregated cluster scores.
+  """
+
+  cluster_stats = data.groupby('engagement_experience_segment')[['satisfaction_score', 'experience_score']].mean()
+  return cluster_stats
 

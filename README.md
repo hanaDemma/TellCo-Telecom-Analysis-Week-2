@@ -30,6 +30,31 @@ The first step is to set up a Python development environment with version contro
 - Commit progress with clear messages.
 - Use pull requests (PR) to merge updates into the main branch.
 
+## Experience Analysis
+## Objective
+- Calculate network experience metrics (RTT, throughput).
+- Cluster users based on experience.
+- Highlight outliers and frequent users.
+
+## Satisfaction Analysis
+## Objective
+- Assign engagement and experience scores to users.
+- Derive satisfaction scores using regression models.
+- Export results to MySQL.
+
+## Tasks
+- Create a new branch task-4 for this phase of development.
+- Commit progress with clear messages.
+- Use pull requests (PR) to merge updates into the main branch.
+
+## Dashboard Development
+## Objective
+- Develop a multi-page Streamlit dashboard.
+- Visualize insights across user engagement, experience, and satisfaction.
+
+## Dashboard Preview
+- Access the interactive dashboard to visualize all analysis results: http://localhost:8503
+
 ## Dependencies
 To ensure the project runs smoothly, the following libraries are required:
 - pandas
