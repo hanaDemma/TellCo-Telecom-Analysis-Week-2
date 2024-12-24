@@ -14,7 +14,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import sys
 import os
-
 # Add the correct path to the 'scripts' folder
 sys.path.append(os.path.abspath("../scripts"))
 # Function to get database connection
@@ -24,7 +23,7 @@ def get_engine():
     hostname = "localhost"
     database = "XDR_Data"
     
-    connection_string = "postgresql+psycopg2://avnadmin:AVNS_KzQrqfQ7oHCjz6ZOttQ@pg-1eaa6685-hana-c91c.b.aivencloud.com:12874/XDR_Data"
+    connection_string = f"postgresql+psycopg2://{username}:{password}@{hostname}:5432/{database}"
     return create_engine(connection_string)
 
 
@@ -40,7 +39,7 @@ xdr_data = pd.read_sql(query, engine)
 # st.sidebar.title("Navigation")
 st.sidebar.header('Telecommunication')
 st.sidebar.write("Telecom dataset analyzed as follows:")
-options = st.sidebar.radio('Select an Analysis', ['Exploratory Data Analysis', 'User Overview Analysis', 'User Engagement Analysis', 'User Experience Analysis', 'User Satisfaction Analysis'])
+options = st.sidebar.selectbox('Select an Analysis', ['Exploratory Data Analysis', 'User Overview Analysis', 'User Engagement Analysis', 'User Experience Analysis', 'User Satisfaction Analysis'])
 
 # Show initial telecom dataset
 st.success("Initial Telecom Dataset")
@@ -510,9 +509,6 @@ elif options == "User Overview Analysis":
 
 elif options == "User Engagement Analysis":
     st.title("User Engagement Analysis")
-
-    
-
     aggregated_data_user_engagement, cluster_stats_user_engagement, top_10_most_engaged_users,normalized_data,engagement_clusters = analyze_user_engagement(xdr_data)
 
     st.subheader('Aggregate session metrics (session freq, session duration and total session) per customer')
@@ -546,10 +542,8 @@ elif options == "User Engagement Analysis":
     st.success('Top Ten sessions frequencies')
     st.write(top_frequency)
     st.bar_chart(top_frequency)
-
     st.success('Top Ten sessions durations')
     st.write(top_duration)
-
     st.success('Top Ten sessions traffics')
     st.write(top_traffic)
     st.bar_chart(top_traffic)
