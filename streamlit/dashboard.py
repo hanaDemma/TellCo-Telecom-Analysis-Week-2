@@ -632,52 +632,52 @@ def analyze_handset_throughput_metrics(data,avg_throughput):
     st.success("Third cluster of Aggregated experience")
     st.write(cluster_3)
 
-#     st.title("Satisfaction Analysis")
-#     st.success("Assign engagement and experience scores to users to calculate user satisfaction")
-#     data_with_scores = assign_engagement_experience_scores(xdr_data, aggregated_data_user_engagement,aggregated_average_experience_analysis)
+    st.title("Satisfaction Analysis")
+    st.success("Assign engagement and experience scores to users to calculate user satisfaction")
+    data_with_scores = assign_engagement_experience_scores(xdr_data, aggregated_data_user_engagement,aggregated_average_experience_analysis)
 
-#     st.write(data_with_scores)
+    st.write(data_with_scores)
 
-#     st.subheader('Calculated satisfaction score based on the average of engagement and experience scores')
-#     st.write('Data with satisfaction score')
-#     data_with_satisfaction = calculate_satisfaction_score(xdr_data)
-#     st.write(data_with_satisfaction)
-#     st.success('Top 10 satisfied customers')
-#     top_satisfied_customers = find_top_satisfied_customers(data_with_satisfaction, 10)
-#     st.write(top_satisfied_customers)
-#     st.subheader('Build a regression model to predict customer satisfaction scores based on engagement and experience')
-#     model, r2, mse = build_regression_model(xdr_data)
-#     st.write("R-squarea and MSE of Regression Model")
-#     st.write("R-squared:", r2)
-#     st.write("Mean Squared Error:", mse)
+    st.subheader('Calculated satisfaction score based on the average of engagement and experience scores')
+    st.write('Data with satisfaction score')
+    data_with_satisfaction = calculate_satisfaction_score(xdr_data)
+    st.write(data_with_satisfaction)
+    st.success('Top 10 satisfied customers')
+    top_satisfied_customers = find_top_satisfied_customers(data_with_satisfaction, 10)
+    st.write(top_satisfied_customers)
+    st.subheader('Build a regression model to predict customer satisfaction scores based on engagement and experience')
+    model, r2, mse = build_regression_model(xdr_data)
+    st.write("R-squarea and MSE of Regression Model")
+    st.write("R-squared:", r2)
+    st.write("Mean Squared Error:", mse)
 
-#     st.subheader("Make predictions")
-# def getEngagementAndExperienceScore(engagement_score,experience_score):
-#     new_user_data = pd.DataFrame({'engagement_score': [engagement_score],
-#                              'experience_score': [experience_score]})
-#     return new_user_data
-# engagement_score=st.number_input('engagement_score')
-# experience_score=st.number_input('experience_score')
-# # Make predictions using the trained model
-# # st.write("The predicted satisfaction score of engagement_score = 0.8 and experience_score = 0.5")
-# if st.button("Predict satisfaction score"):
-#     new_user_data=getEngagementAndExperienceScore(engagement_score,experience_score)
-#     predicted_satisfaction_score = model.predict(new_user_data)
-#     st.success(f"The Predicted satisfaction score of {engagement_score} and {experience_score} is {predicted_satisfaction_score}")
-#     # st.write("Predicted satisfaction score:", predicted_satisfaction_score)
+    st.subheader("Make predictions")
+def getEngagementAndExperienceScore(engagement_score,experience_score):
+    new_user_data = pd.DataFrame({'engagement_score': [engagement_score],
+                             'experience_score': [experience_score]})
+    return new_user_data
+engagement_score=st.number_input('engagement_score')
+experience_score=st.number_input('experience_score')
+# Make predictions using the trained model
+# st.write("The predicted satisfaction score of engagement_score = 0.8 and experience_score = 0.5")
+if st.button("Predict satisfaction score"):
+    new_user_data=getEngagementAndExperienceScore(engagement_score,experience_score)
+    predicted_satisfaction_score = model.predict(new_user_data)
+    st.success(f"The Predicted satisfaction score of {engagement_score} and {experience_score} is {predicted_satisfaction_score}")
+    # st.write("Predicted satisfaction score:", predicted_satisfaction_score)
 
-#     st.subheader("Segment users into two clusters based on engagement and experience scores using k-means clustering")
-#     segmented_data = segment_users_k_means(xdr_data)
-#     cluster_segmented_1=segmented_data[segmented_data['engagement_experience_segment']==0]
-#     cluster_segmented_2=segmented_data[segmented_data['engagement_experience_segment']==1]
-#     st.success("First cluster based on engagement and experience scores")
-#     st.write(cluster_segmented_1)
-#     st.success("Second cluster based on engagement and experience scores")
-#     st.write(cluster_segmented_2)
+    st.subheader("Segment users into two clusters based on engagement and experience scores using k-means clustering")
+    segmented_data = segment_users_k_means(xdr_data)
+    cluster_segmented_1=segmented_data[segmented_data['engagement_experience_segment']==0]
+    cluster_segmented_2=segmented_data[segmented_data['engagement_experience_segment']==1]
+    st.success("First cluster based on engagement and experience scores")
+    st.write(cluster_segmented_1)
+    st.success("Second cluster based on engagement and experience scores")
+    st.write(cluster_segmented_2)
 
-#     st.subheader("The average satisfaction and experience scores for each of the two clusters")
-#     cluster_scores = aggregate_cluster_scores(segmented_data)
-#     st.write(cluster_scores)
+    st.subheader("The average satisfaction and experience scores for each of the two clusters")
+    cluster_scores = aggregate_cluster_scores(segmented_data)
+    st.write(cluster_scores)
 
 
 
