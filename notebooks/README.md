@@ -25,6 +25,17 @@ The objective of this phase is to provide a comprehensive analysis of user behav
 - Bivariate Analysis: Explore relationships between two variables.
 - Correlation Analysis: Identify correlations between different features.
 - Dimensionality Reduction: Apply techniques like PCA if needed for analysis.
+# 4.  Experience Analytics
+- Aggregate, per customer:
+   - Average TCP retransmission
+   - Average RTT
+   - Handset type
+   - Average throughput
+- Compute & list 10 of the top, bottom, and most frequent:
+    - TCP values in the dataset. 
+    - RTT values in the dataset.
+    - Throughput values in the dataset.
+
 # How to Use
 - Clone the Repository:
 git clone https://github.com/hanaDemma/TellCo-Telecom-Analysis-Week-2.
