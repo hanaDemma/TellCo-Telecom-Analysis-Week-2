@@ -12,10 +12,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
-
 import sys
 import os
+
 # Add the correct path to the 'scripts' folder
 sys.path.append(os.path.abspath("../scripts"))
 # Function to get database connection
@@ -25,7 +24,7 @@ def get_engine():
     hostname = "localhost"
     database = "XDR_Data"
     
-    connection_string = f"postgresql+psycopg2://{username}:{password}@{hostname}:5432/{database}"
+    connection_string = "postgresql+psycopg2://avnadmin:AVNS_KzQrqfQ7oHCjz6ZOttQ@pg-1eaa6685-hana-c91c.b.aivencloud.com:12874/XDR_Data"
     return create_engine(connection_string)
 
 
@@ -406,12 +405,10 @@ if options == "Exploratory Data Analysis":
     dataType_of_Dataset = st.selectbox("Choose a column to view its datatype", xdr_data.columns)
     if st.button("View Datatype"):
        st.write(xdr_data[dataType_of_Dataset].dtypes)
-    st.write('...............................................................................................................................................................................................................................................................')
-
 
 elif options == "User Overview Analysis":
-    st.title("User Overview Analysis")
-    st.write("Here you can perform user overview analysis.")
+    # st.title("User Overview Analysis")
+    # st.write("Here you can perform user overview analysis.")
     
     st.title("User Overview analysis")
     top_handsets = xdr_data['Handset Type'].value_counts().head(10)
@@ -567,124 +564,124 @@ elif options == "User Engagement Analysis":
 
 
 
-elif options == "User Experience Analysis":
-    st.title("User Experience Analysis")
-    # Add your analysis code here for User Experience
-    st.title('Experience Analytics')
-    st.success('Aggregate average TCP,RTT,TP and Handset type per user')
-    aggregated_average_experience_analysis,experience_clusters = aggregate_average_xdr_data(xdr_data)
+# elif options == "User Experience Analysis":
+#     st.title("User Experience Analysis")
+#     # Add your analysis code here for User Experience
+#     st.title('Experience Analytics')
+#     st.success('Aggregate average TCP,RTT,TP and Handset type per user')
+#     aggregated_average_experience_analysis,experience_clusters = aggregate_average_xdr_data(xdr_data)
 
-    st.dataframe(aggregated_average_experience_analysis)
-
-
-    # Handset Type Distribution
-    st.success("Handset Type Distribution")
-    handset_counts = aggregated_average_experience_analysis['Handset Type'].value_counts()
-    st.bar_chart(handset_counts)
-
-    st.success('Top, Bottom, and Most frequent values for TCP, RTT, and throughput')
+#     st.dataframe(aggregated_average_experience_analysis)
 
 
-    # Find top, bottom, and most frequent values for TCP, RTT, and throughput
-    top_tcp_DL, bottom_tcp_DL, frequent_tcp_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP DL Retrans. Vol (Bytes)')
-    top_tcp_UL, bottom_tcp_UL, frequent_tcp_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP UL Retrans. Vol (Bytes)')
-    top_rtt_DL, bottom_rtt_DL, frequent_rtt_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT DL (ms)')
-    top_rtt_UL, bottom_rtt_UL, frequent_rtt_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT UL (ms)')
-    top_throughput_DL, bottom_throughput_DL, frequent_throughput_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP DL (kbps)')
-    top_throughput_UL, bottom_throughput_UL, frequent_throughput_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP UL (kbps)')
-    st.success('Top TCP')
-    st.write(top_tcp_DL,top_tcp_UL)
-    st.success('Bottom TCP')
-    st.write(bottom_tcp_DL,bottom_tcp_UL)
-    st.success('Frequent TCP')
-    st.write(frequent_tcp_DL,frequent_tcp_UL)
-    st.success('Top RTT')
-    st.write(top_rtt_DL,top_rtt_UL)
-    st.success('Bottom RTT')
-    st.write(bottom_rtt_DL,bottom_rtt_UL)
-    st.success('Frequent RTT')
-    st.write(frequent_rtt_DL,frequent_rtt_UL)
-    st.success('Top Throughput')
-    st.write(top_throughput_DL,top_throughput_UL)
-    st.success('Bottom Throughput')
-    st.write(bottom_throughput_DL,bottom_throughput_UL)
-    st.success('Frequent Throughput')
-    st.write(frequent_throughput_DL,frequent_throughput_UL)
+#     # Handset Type Distribution
+#     st.success("Handset Type Distribution")
+#     handset_counts = aggregated_average_experience_analysis['Handset Type'].value_counts()
+#     st.bar_chart(handset_counts)
 
-    st.subheader('The distribution of average Throughput per Handset type')
-def analyze_handset_throughput_metrics(data,avg_throughput):
-    avg_retransmission_by_handset = data.groupby('Handset Type')[avg_throughput].mean()
-    st.success("Average Throughput per Handset Type")
-    st.write(avg_retransmission_by_handset)
-    analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP DL (kbps)')
-    analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP UL (kbps)')
+#     st.success('Top, Bottom, and Most frequent values for TCP, RTT, and throughput')
 
-    st.subheader('Average TCP retransmission view per handset type')
-    def analyze_handset_retrasmission_metrics(data,tcp_retrans):
-        avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retrans].mean()
-    st.success("Average TCP Retransmission per Handset Type")
-    st.write(avg_retransmission_by_handset)
 
-    analyze_handset_retrasmission_metrics(xdr_data,'TCP DL Retrans. Vol (Bytes)')
-    analyze_handset_retrasmission_metrics(xdr_data,'TCP UL Retrans. Vol (Bytes)')
+#     # Find top, bottom, and most frequent values for TCP, RTT, and throughput
+#     top_tcp_DL, bottom_tcp_DL, frequent_tcp_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP DL Retrans. Vol (Bytes)')
+#     top_tcp_UL, bottom_tcp_UL, frequent_tcp_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'TCP UL Retrans. Vol (Bytes)')
+#     top_rtt_DL, bottom_rtt_DL, frequent_rtt_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT DL (ms)')
+#     top_rtt_UL, bottom_rtt_UL, frequent_rtt_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg RTT UL (ms)')
+#     top_throughput_DL, bottom_throughput_DL, frequent_throughput_DL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP DL (kbps)')
+#     top_throughput_UL, bottom_throughput_UL, frequent_throughput_UL = find_top_bottom_frequent(aggregated_average_experience_analysis, 'Avg Bearer TP UL (kbps)')
+#     st.success('Top TCP')
+#     st.write(top_tcp_DL,top_tcp_UL)
+#     st.success('Bottom TCP')
+#     st.write(bottom_tcp_DL,bottom_tcp_UL)
+#     st.success('Frequent TCP')
+#     st.write(frequent_tcp_DL,frequent_tcp_UL)
+#     st.success('Top RTT')
+#     st.write(top_rtt_DL,top_rtt_UL)
+#     st.success('Bottom RTT')
+#     st.write(bottom_rtt_DL,bottom_rtt_UL)
+#     st.success('Frequent RTT')
+#     st.write(frequent_rtt_DL,frequent_rtt_UL)
+#     st.success('Top Throughput')
+#     st.write(top_throughput_DL,top_throughput_UL)
+#     st.success('Bottom Throughput')
+#     st.write(bottom_throughput_DL,bottom_throughput_UL)
+#     st.success('Frequent Throughput')
+#     st.write(frequent_throughput_DL,frequent_throughput_UL)
 
-    st.subheader('Aggregated experience Cluster analysis')
-    cluster_1 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 0]
-    cluster_2 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 1]
-    cluster_3 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 2]
-    st.success("First cluster of Aggregated experience")
-    st.write(cluster_1)
-    st.success("Second cluster of Aggregated experience")
-    st.write(cluster_2)
-    st.success("Third cluster of Aggregated experience")
-    st.write(cluster_3)
+#     st.subheader('The distribution of average Throughput per Handset type')
+# def analyze_handset_throughput_metrics(data,avg_throughput):
+#     avg_retransmission_by_handset = data.groupby('Handset Type')[avg_throughput].mean()
+#     st.success("Average Throughput per Handset Type")
+#     st.write(avg_retransmission_by_handset)
+#     analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP DL (kbps)')
+#     analyze_handset_throughput_metrics(xdr_data,'Avg Bearer TP UL (kbps)')
 
-    st.title("Satisfaction Analysis")
-    st.success("Assign engagement and experience scores to users to calculate user satisfaction")
-    data_with_scores = assign_engagement_experience_scores(xdr_data, aggregated_data_user_engagement,aggregated_average_experience_analysis)
+#     st.subheader('Average TCP retransmission view per handset type')
+#     def analyze_handset_retrasmission_metrics(data,tcp_retrans):
+#         avg_retransmission_by_handset = data.groupby('Handset Type')[tcp_retrans].mean()
+#     st.success("Average TCP Retransmission per Handset Type")
+#     st.write(avg_retransmission_by_handset)
 
-    st.write(data_with_scores)
+#     analyze_handset_retrasmission_metrics(xdr_data,'TCP DL Retrans. Vol (Bytes)')
+#     analyze_handset_retrasmission_metrics(xdr_data,'TCP UL Retrans. Vol (Bytes)')
 
-    st.subheader('Calculated satisfaction score based on the average of engagement and experience scores')
-    st.write('Data with satisfaction score')
-    data_with_satisfaction = calculate_satisfaction_score(xdr_data)
-    st.write(data_with_satisfaction)
-    st.success('Top 10 satisfied customers')
-    top_satisfied_customers = find_top_satisfied_customers(data_with_satisfaction, 10)
-    st.write(top_satisfied_customers)
-    st.subheader('Build a regression model to predict customer satisfaction scores based on engagement and experience')
-    model, r2, mse = build_regression_model(xdr_data)
-    st.write("R-squarea and MSE of Regression Model")
-    st.write("R-squared:", r2)
-    st.write("Mean Squared Error:", mse)
+#     st.subheader('Aggregated experience Cluster analysis')
+#     cluster_1 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 0]
+#     cluster_2 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 1]
+#     cluster_3 = aggregated_average_experience_analysis[aggregated_average_experience_analysis['clusters'] == 2]
+#     st.success("First cluster of Aggregated experience")
+#     st.write(cluster_1)
+#     st.success("Second cluster of Aggregated experience")
+#     st.write(cluster_2)
+#     st.success("Third cluster of Aggregated experience")
+#     st.write(cluster_3)
 
-    st.subheader("Make predictions")
-def getEngagementAndExperienceScore(engagement_score,experience_score):
-    new_user_data = pd.DataFrame({'engagement_score': [engagement_score],
-                             'experience_score': [experience_score]})
-    return new_user_data
-engagement_score=st.number_input('engagement_score')
-experience_score=st.number_input('experience_score')
-# Make predictions using the trained model
-# st.write("The predicted satisfaction score of engagement_score = 0.8 and experience_score = 0.5")
-if st.button("Predict satisfaction score"):
-    new_user_data=getEngagementAndExperienceScore(engagement_score,experience_score)
-    predicted_satisfaction_score = model.predict(new_user_data)
-    st.success(f"The Predicted satisfaction score of {engagement_score} and {experience_score} is {predicted_satisfaction_score}")
-    # st.write("Predicted satisfaction score:", predicted_satisfaction_score)
+#     st.title("Satisfaction Analysis")
+#     st.success("Assign engagement and experience scores to users to calculate user satisfaction")
+#     data_with_scores = assign_engagement_experience_scores(xdr_data, aggregated_data_user_engagement,aggregated_average_experience_analysis)
 
-    st.subheader("Segment users into two clusters based on engagement and experience scores using k-means clustering")
-    segmented_data = segment_users_k_means(xdr_data)
-    cluster_segmented_1=segmented_data[segmented_data['engagement_experience_segment']==0]
-    cluster_segmented_2=segmented_data[segmented_data['engagement_experience_segment']==1]
-    st.success("First cluster based on engagement and experience scores")
-    st.write(cluster_segmented_1)
-    st.success("Second cluster based on engagement and experience scores")
-    st.write(cluster_segmented_2)
+#     st.write(data_with_scores)
 
-    st.subheader("The average satisfaction and experience scores for each of the two clusters")
-    cluster_scores = aggregate_cluster_scores(segmented_data)
-    st.write(cluster_scores)
+#     st.subheader('Calculated satisfaction score based on the average of engagement and experience scores')
+#     st.write('Data with satisfaction score')
+#     data_with_satisfaction = calculate_satisfaction_score(xdr_data)
+#     st.write(data_with_satisfaction)
+#     st.success('Top 10 satisfied customers')
+#     top_satisfied_customers = find_top_satisfied_customers(data_with_satisfaction, 10)
+#     st.write(top_satisfied_customers)
+#     st.subheader('Build a regression model to predict customer satisfaction scores based on engagement and experience')
+#     model, r2, mse = build_regression_model(xdr_data)
+#     st.write("R-squarea and MSE of Regression Model")
+#     st.write("R-squared:", r2)
+#     st.write("Mean Squared Error:", mse)
+
+#     st.subheader("Make predictions")
+# def getEngagementAndExperienceScore(engagement_score,experience_score):
+#     new_user_data = pd.DataFrame({'engagement_score': [engagement_score],
+#                              'experience_score': [experience_score]})
+#     return new_user_data
+# engagement_score=st.number_input('engagement_score')
+# experience_score=st.number_input('experience_score')
+# # Make predictions using the trained model
+# # st.write("The predicted satisfaction score of engagement_score = 0.8 and experience_score = 0.5")
+# if st.button("Predict satisfaction score"):
+#     new_user_data=getEngagementAndExperienceScore(engagement_score,experience_score)
+#     predicted_satisfaction_score = model.predict(new_user_data)
+#     st.success(f"The Predicted satisfaction score of {engagement_score} and {experience_score} is {predicted_satisfaction_score}")
+#     # st.write("Predicted satisfaction score:", predicted_satisfaction_score)
+
+#     st.subheader("Segment users into two clusters based on engagement and experience scores using k-means clustering")
+#     segmented_data = segment_users_k_means(xdr_data)
+#     cluster_segmented_1=segmented_data[segmented_data['engagement_experience_segment']==0]
+#     cluster_segmented_2=segmented_data[segmented_data['engagement_experience_segment']==1]
+#     st.success("First cluster based on engagement and experience scores")
+#     st.write(cluster_segmented_1)
+#     st.success("Second cluster based on engagement and experience scores")
+#     st.write(cluster_segmented_2)
+
+#     st.subheader("The average satisfaction and experience scores for each of the two clusters")
+#     cluster_scores = aggregate_cluster_scores(segmented_data)
+#     st.write(cluster_scores)
 
 
 

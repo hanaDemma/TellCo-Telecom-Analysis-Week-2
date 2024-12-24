@@ -1,7 +1,11 @@
 from sqlalchemy import create_engine, text
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Database URL
-DATABASE_URL = "postgresql+psycopg2://postgres:admin@localhost:5432/XDR_Data"
+DATABASE_URL = os.getenv("DATABASE_URL")
+# DATABASE_URL = "postgresql+psycopg2://postgres:admin@localhost:5432/XDR_Data"
 
 # Function to create the engine
 def get_engine(echo=False):
